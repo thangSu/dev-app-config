@@ -9,5 +9,8 @@ images:
 replicas:
 - count: 1
   name: dev-app
+
+namespace: new-staging
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
