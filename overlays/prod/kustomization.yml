@@ -1,0 +1,12 @@
+resources: 
+  - ../../base
+
+
+images:
+- name: thangsu/devops-lab
+  newName: thangsu/devops-lab
+  newTag: staging-25c3606
+
+replicas:
+- count: 1
+  name: dev-app

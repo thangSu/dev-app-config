@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-memcached-svc
+  namespace: example-app
+spec:
+  ports:
+  - port: 11211
+    targetPort: dev-mem-pt
+    protocol: TCP
+  selector:
+    app: dev-memcached
+  type: ClusterIP
