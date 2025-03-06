@@ -21,6 +21,8 @@ spec:
         ports: 
         - name: dev-app
           containerPort: 8080
+      imagePullSecrets:
+      - name: docker-secret
       initContainers:
       - name: init-mydb
         image: busybox
