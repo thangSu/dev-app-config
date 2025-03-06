@@ -1,6 +1,5 @@
 resources:
 - ../../base
-
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
@@ -9,8 +8,30 @@ images:
 replicas:
 - count: 1
   name: dev-app
-
 namespace: new-staging
+
+patches:
+  - target:
+      kind: Deployment
+      name: dev-app
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/initContainers/0/command
+        value:
+          - "sh"
+          - "-c"
+          - "until nslookup dev-mysql-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
+  - target:
+      kind: Deployment
+      name: dev-app
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/initContainers/1/command
+        value:
+          - "sh"
+          - "-c"
+          - "until nslookup dev-memcached-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
+
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
