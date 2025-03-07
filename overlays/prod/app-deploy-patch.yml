@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-app  # Must match your Deployment name
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: init-mydb  # Must match the initContainer name
+          command:
+            - "sh"
+            - "-c"
+            - "until nslookup dev-mysql-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
+        - name: init-memcache
+          command:
+            - "sh"
+            - "-c"
+            - "until nslookup dev-memcached-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for cache; sleep 2; done;"

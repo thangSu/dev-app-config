@@ -1,11 +1,17 @@
 resources: 
   - ../../base
 
-
+namespace: new-prod
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
-  newTag: staging-25c3606
+  newTag: main-40aa67c
+
+patches: 
+- target: 
+    kind: Deployment 
+    name: dev-app
+  path: app-deploy-patch.yml
 
 replicas:
 - count: 1
