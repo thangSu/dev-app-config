@@ -1,5 +1,8 @@
 resources:
 - ../../base
+
+namespace: new-staging
+
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
@@ -8,7 +11,7 @@ images:
 replicas:
 - count: 1
   name: dev-app
-namespace: new-staging
+
 
 patches:
   - target:
@@ -31,7 +34,13 @@ patches:
           - "sh"
           - "-c"
           - "until nslookup dev-memcached-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
-
+  - target: 
+      kind: Ingress
+      name: devops-ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: dev.kameyoko.online
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

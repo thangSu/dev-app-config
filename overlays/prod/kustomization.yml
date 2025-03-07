@@ -12,7 +12,13 @@ patches:
     kind: Deployment 
     name: dev-app
   path: app-deploy-patch.yml
-
+- target: 
+    kind: Ingress
+    name: devops-ingress
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: prod.kameyoko.online
 replicas:
 - count: 1
   name: dev-app
