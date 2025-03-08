@@ -6,7 +6,7 @@ namespace: new-staging
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
-  newTag: staging-25c3606
+  newTag: staging-95312e6
 
 replicas:
 - count: 1
@@ -14,33 +14,33 @@ replicas:
 
 
 patches:
-  - target:
-      kind: Deployment
-      name: dev-app
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/initContainers/0/command
-        value:
-          - "sh"
-          - "-c"
-          - "until nslookup dev-mysql-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
-  - target:
-      kind: Deployment
-      name: dev-app
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/initContainers/1/command
-        value:
-          - "sh"
-          - "-c"
-          - "until nslookup dev-memcached-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
-  - target: 
-      kind: Ingress
-      name: devops-ingress
-    patch: |-
-      - op: replace
-        path: /spec/rules/0/host
-        value: dev.kameyoko.online
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/initContainers/0/command
+      value:
+        - "sh"
+        - "-c"
+        - "until nslookup dev-mysql-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
+  target:
+    kind: Deployment
+    name: dev-app
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/initContainers/1/command
+      value:
+        - "sh"
+        - "-c"
+        - "until nslookup dev-memcached-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
+  target:
+    kind: Deployment
+    name: dev-app
+- patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: dev.kameyoko.online
+  target:
+    kind: Ingress
+    name: devops-ingress
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
