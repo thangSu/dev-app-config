@@ -10,12 +10,13 @@ namespace: new-staging
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
-  newTag: staging-de12623
+  newTag: staging-86a6ef0
 
 replicas:
 - count: 1
   name: dev-app
 
+# set domain for ingress
 patches:
 - patch: |-
     - op: replace
@@ -37,7 +38,6 @@ patches:
   target:
     kind: Deployment
     name: dev-app
-# set domain for ingress
 - patch: |-
     - op: replace
       path: /spec/rules/0/host
@@ -49,10 +49,10 @@ patches:
 
 # create secret for storing password of mysql and rabbitmq
 secretGenerator:
-- name: dev-app-secret
-  literals:
+- literals:
   - db-pass=thang2k3003
   - rmq-pass=thang2k3003
+  name: dev-app-secret
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
