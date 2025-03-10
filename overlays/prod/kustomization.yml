@@ -1,5 +1,5 @@
-resources: 
-  - ../../base
+resources:
+- ../../base
 # set namespace
 namespace: new-prod
 
@@ -7,32 +7,34 @@ namespace: new-prod
 components:
 - ../../base/components/ingress
 # config ingress
-patches: 
-- target: 
+patches:
+- path: app-deploy-patch.yml
+  target:
     kind: Deployment
     name: dev-app
-  path: app-deploy-patch.yml
-- target: 
-    kind: Ingress
-    name: devops-ingress
-  patch: |-
+- patch: |-
     - op: replace
       path: /spec/rules/0/host
       value: prod.kameyoko.online
+  target:
+    kind: Ingress
+    name: devops-ingress
 
 # create secret for storing password of mysql and rabbitmq
 secretGenerator:
-- name: dev-app-secret
-  literals:
+- literals:
   - db-pass=thang2k3003
   - rmq-pass=thang2k3003
+  name: dev-app-secret
 
 # config dev-app image, command and replicas numbers
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
-  newTag: staging-de12623
+  newTag: main-170605d
 
 replicas:
 - count: 1
   name: dev-app
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
