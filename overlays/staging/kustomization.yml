@@ -1,46 +1,58 @@
 resources:
 - ../../base
+# enable ingress component
+components:
+- ../../base/components/ingress
 
+# set namespace
 namespace: new-staging
 
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
-  newTag: staging-25c3606
+  newTag: staging-de12623
 
 replicas:
 - count: 1
   name: dev-app
 
-
 patches:
-  - target:
-      kind: Deployment
-      name: dev-app
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/initContainers/0/command
-        value:
-          - "sh"
-          - "-c"
-          - "until nslookup dev-mysql-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
-  - target:
-      kind: Deployment
-      name: dev-app
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/initContainers/1/command
-        value:
-          - "sh"
-          - "-c"
-          - "until nslookup dev-memcached-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
-  - target: 
-      kind: Ingress
-      name: devops-ingress
-    patch: |-
-      - op: replace
-        path: /spec/rules/0/host
-        value: dev.kameyoko.online
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/initContainers/0/command
+      value:
+        - "sh"
+        - "-c"
+        - "until nslookup dev-mysql-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
+  target:
+    kind: Deployment
+    name: dev-app
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/initContainers/1/command
+      value:
+        - "sh"
+        - "-c"
+        - "until nslookup dev-memcached-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;"
+  target:
+    kind: Deployment
+    name: dev-app
+# set domain for ingress
+- patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: dev.kameyoko.online
+  target:
+    kind: Ingress
+    name: devops-ingress
+
+
+# create secret for storing password of mysql and rabbitmq
+secretGenerator:
+- name: dev-app-secret
+  literals:
+  - db-pass=thang2k3003
+  - rmq-pass=thang2k3003
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

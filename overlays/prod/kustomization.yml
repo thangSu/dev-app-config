@@ -1,15 +1,15 @@
 resources: 
   - ../../base
-
+# set namespace
 namespace: new-prod
-images:
-- name: thangsu/devops-lab
-  newName: thangsu/devops-lab
-  newTag: main-40aa67c
 
+# enable ingress component
+components:
+- ../../base/components/ingress
+# config ingress
 patches: 
 - target: 
-    kind: Deployment 
+    kind: Deployment
     name: dev-app
   path: app-deploy-patch.yml
 - target: 
@@ -19,6 +19,20 @@ patches:
     - op: replace
       path: /spec/rules/0/host
       value: prod.kameyoko.online
+
+# create secret for storing password of mysql and rabbitmq
+secretGenerator:
+- name: dev-app-secret
+  literals:
+  - db-pass=thang2k3003
+  - rmq-pass=thang2k3003
+
+# config dev-app image, command and replicas numbers
+images:
+- name: thangsu/devops-lab
+  newName: thangsu/devops-lab
+  newTag: staging-de12623
+
 replicas:
 - count: 1
   name: dev-app

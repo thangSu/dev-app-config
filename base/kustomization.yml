@@ -1,8 +1,6 @@
 resources:
   - app-deploy.yml
-  - app-secret.yml
   - app-svc.yml
-  - ingress.yml
   - memcached-deploy.yml
   - memcached-svc.yml
   - mysql-deploy.yml

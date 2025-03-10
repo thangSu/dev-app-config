@@ -9,5 +9,5 @@ spec:
     targetPort: dev-rb-pt
     protocol: TCP
   selector:
-    app: dev-rb-svc
+    app: dev-rabbitmq
   type: ClusterIP
