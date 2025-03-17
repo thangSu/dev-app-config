@@ -10,7 +10,7 @@ namespace: new-staging
 images:
 - name: thangsu/devops-lab
   newName: thangsu/devops-lab
-  newTag: staging-72345b5
+  newTag: staging-364a446
 
 replicas:
 - count: 1
